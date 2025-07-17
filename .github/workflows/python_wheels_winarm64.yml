@@ -20,7 +20,7 @@ env:
 jobs:
   python-wheels-Win-ARM64:
     name: Build wheel for Windows ARM64
-    runs-on: windows-latest  # Use windows-latest since windows-11-arm may not be available
+    runs-on: windows-11-arm
 
     steps:
       - uses: actions/checkout@v4
@@ -30,7 +30,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'  # Specify Python version
+          python-version: '3.11' 
       
       - name: Install dependencies
         run: |
