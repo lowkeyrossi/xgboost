@@ -20,7 +20,7 @@ env:
 jobs:
   python-wheels-Win-ARM64:
     name: Build wheel for Windows ARM64
-    runs-on: windows-11-arm
+    runs-on: windows-latest  # Use windows-latest since windows-11-arm may not be available
 
     steps:
       - uses: actions/checkout@v4
@@ -30,7 +30,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.9'  # Specify Python version
       
       - name: Install dependencies
         run: |
@@ -54,8 +54,10 @@ jobs:
           # Patch to rename pkg to xgboost-cpu
           python ops/script/pypi_variants.py --use-cpu-suffix=1 --require-nccl-dep=0
           cd python-package
+          mkdir -p wheelhouse
           pip wheel --no-deps -v . --wheel-dir wheelhouse/
-          python -m wheel tags --python-tag py3 --abi-tag none --platform win_arm64 --remove wheelhouse/*.whl
+          $wheelFile = Get-ChildItem wheelhouse/*.whl | Select-Object -First 1 -ExpandProperty FullName
+          python -m wheel tags --python-tag py3 --abi-tag none --platform win_arm64 --remove $wheelFile
           
       - name: Try installing XGBoost
         run: |
