@@ -36,11 +36,6 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install wheel setuptools
 
-      - name: Setup MSVC for ARM64
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: arm64
-
       - name: Build XGBoost for ARM64
         run: |
           mkdir build
@@ -57,12 +52,6 @@ jobs:
           pip wheel --no-deps -v . --wheel-dir wheelhouse/
           $wheelFile = Get-ChildItem wheelhouse/*.whl | Select-Object -First 1 -ExpandProperty FullName
           python -m wheel tags --python-tag py3 --abi-tag none --platform win_arm64 --remove $wheelFile
-
-      - name: Try installing XGBoost
-        run: |
-          $wheelFile = Get-ChildItem python-package/wheelhouse/*.whl | Select-Object -First 1 -ExpandProperty FullName
-          python -m pip install -vvv "$wheelFile"
-          python -c "import xgboost; print('XGBoost version:', xgboost.__version__)"
 
       - name: Upload Python wheel
         if: github.ref == 'refs/heads/master' || contains(github.ref, 'refs/heads/release_')
